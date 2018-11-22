@@ -3,3 +3,13 @@ main: net.theopalgames.chainedcombat
 version: 1.0
 author: aehmttw and Hallowizer
 description: A combat system to bridge the 1.8 and 1.9 combat systems.
+
+commands:
+  chained:
+    description: ChainedCombat command.
+    usage: chained
+
+permissions:
+  chained.reload:
+    description: Allows you to reload the ChainedCombat config.
+    default: op

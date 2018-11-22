@@ -1,0 +1,9 @@
+# By setting both of these values to false, you agree to provide plugin info and download in another way, according to AGPL 3.0
+enable-info-command: true
+enable-info-broadcasts: true
+
+enable-combomsg-command: 'chained alert on'
+disable-combomsg-command: 'chained alert off'
+
+enable-combosound-command: 'chained sound on'
+disable-combosound-command: 'chained sound off'
