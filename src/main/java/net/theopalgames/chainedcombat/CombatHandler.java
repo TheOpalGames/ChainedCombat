@@ -62,7 +62,7 @@ public final class CombatHandler implements Listener {
 				effective = false;
 			}
 
-			if (combomsg.get(getUUID(attacker)))
+			if (combomsg.get(attacker.getUniqueId().toString()))
 			{
 				if (combo >= 1 && damaged instanceof Player)
 					attacker.sendMessage("\u00A7a(+"+Math.round(event.getDamage()*10)/10.0+") " + (combo+1) + " hit chain, +" + Math.round(extra*10)/40.0 + " (x"+ (1+combo*0.5/10.0) + ")");
@@ -78,7 +78,7 @@ public final class CombatHandler implements Listener {
 				pitch *= 1.0594630943;
 			}
 
-			if (combosound.get(getUUID(attacker)))
+			if (combosound.get(attacker.getUniqueId().toString()))
 			{
 				if (effective)
 					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BELL, 1000, (float) pitch);
@@ -96,16 +96,16 @@ public final class CombatHandler implements Listener {
 				}
 				try
 				{
-					if (combomsg.get(getUUID(damagedplayer)))
+					if (combomsg.get(damagedplayer.getUniqueId().toString()))
 					{
 						if (combo >= 1)
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit by a "+(combo+1)+"-hit chain! -" + (int)Math.round(extra*10)/10.0 + "!");
 						else
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 					}
-					if (combosound.get(getUUID(damagedplayer)))
+					if (combosound.get(damagedplayer.getUniqueId().toString()))
 					{
-						((Player) damaged).playSound(damaged.getLocation(), Sound.BLOCK_NOTE_GUITAR, 1000, (float) pitch);
+						damagedplayer.playSound(damaged.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1000, (float) pitch);
 					}
 				}
 				catch (Exception e) {};
@@ -115,7 +115,7 @@ public final class CombatHandler implements Listener {
 		{
 			Entity damaged = event.getEntity();
 			if (damaged instanceof Player)
-				if (combomsg.get(getUUID((Player)damaged)))
+				if (combomsg.get(((Player) damaged).getUniqueId().toString()))
 					damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 		}
 	}
