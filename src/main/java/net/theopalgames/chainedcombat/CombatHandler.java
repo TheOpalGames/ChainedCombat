@@ -1,12 +1,16 @@
 package net.theopalgames.chainedcombat;
 
+import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.google.common.base.Preconditions;
@@ -118,5 +122,29 @@ public final class CombatHandler implements Listener {
 				if (combomsg.get(((Player) damaged).getUniqueId().toString()))
 					damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 		}
+	}
+	
+	@EventHandler
+	public void onDamaged(EntityDamageEvent event)
+	{
+		Entity damaged = event.getEntity();
+		if (damaged instanceof LivingEntity)
+		{
+			LivingEntity e = (LivingEntity) damaged;
+			if (event.getFinalDamage() >= e.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue())
+			{
+				e.getWorld().playSound(e.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1f, 1f);
+				e.getWorld().spawnParticle(Particle.END_ROD, e.getLocation().add(0, 1, 0), 50, 0, 0, 0, 0.075);		
+			}
+
+		}
+		if (event.getCause().equals(DamageCause.ENTITY_ATTACK) || event.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK) || event.getCause().equals(DamageCause.ENTITY_EXPLOSION) || event.getCause().equals(DamageCause.PROJECTILE))
+			return;
+		if (damaged instanceof Player)
+		{
+
+			if (combomsg.get(((Player) damaged).getUniqueId().toString()))
+				damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Ouch!");
+		}	
 	}
 }
