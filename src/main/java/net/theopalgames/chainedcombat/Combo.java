@@ -16,8 +16,4 @@ public final class Combo {
 	@Getter
 	@Setter
 	private int count;
-	
-	public void update() {
-		
-	}
 }

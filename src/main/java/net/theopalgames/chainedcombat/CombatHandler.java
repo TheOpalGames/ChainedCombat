@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.google.common.base.Preconditions;
 
@@ -31,7 +32,13 @@ public final class CombatHandler implements Listener {
 		enabled = false;
 	}
 	
-	private final Map<Player,Combo> combos = new HashMap<>();
+	private final Map<Player,PlayerWrapper> players = new HashMap<>();
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		players.put(player, new PlayerWrapper(player).init());
+	}
 	
 	@EventHandler
 	public void onCombat(EntityDamageByEntityEvent event)
@@ -51,28 +58,30 @@ public final class CombatHandler implements Listener {
 			{
 				try
 				{
-					extra = event.getDamage() * 0.2 * combos.get(attacker.getName()).getCount();
+					extra = event.getDamage() * 0.2 * players.get(attacker).getCombo().getCount();
 				}
 				catch (Exception e) 
 				{
-					combos.put(attacker, new Combo(attacker, 0, 0, 0));
+					players.get(attacker).setCombo(new Combo(attacker, 0, 0, 0));
 				}
 				if (damaged instanceof Player)
 					event.setDamage(event.getDamage() + extra / 4.0);
 				else
 					event.setDamage(event.getDamage() + extra);
 				
-				combo = combos.get(attacker.getName()).getCount();
+				Combo theCombo = players.get(attacker).getCombo();
 				
-				combos.get(attacker.getName()).setCount(combo+1);
-				combos.get(attacker.getName()).setTime(System.currentTimeMillis()/1000);
+				combo = theCombo.getCount();
+				
+				theCombo.setCount(combo+1);
+				theCombo.setTime(System.currentTimeMillis()/1000);
 			}
 			else
 			{
 				effective = false;
 			}
 
-			if (combomsg.get(attacker.getUniqueId().toString()))
+			if (players.get(attacker).isChatAlerts())
 			{
 				if (combo >= 1 && damaged instanceof Player)
 					attacker.sendMessage("\u00A7a(+"+Math.round(event.getDamage()*10)/10.0+") " + (combo+1) + " hit chain, +" + Math.round(extra*10)/40.0 + " (x"+ (1+combo*0.5/10.0) + ")");
@@ -88,7 +97,7 @@ public final class CombatHandler implements Listener {
 				pitch *= 1.0594630943;
 			}
 
-			if (combosound.get(attacker.getUniqueId().toString()))
+			if (players.get(attacker).isDingAlerts())
 			{
 				if (effective)
 					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BELL, 1000, (float) pitch);
@@ -106,14 +115,14 @@ public final class CombatHandler implements Listener {
 				}
 				try
 				{
-					if (combomsg.get(damagedplayer.getUniqueId().toString()))
+					if (players.get(damagedplayer).isChatAlerts())
 					{
 						if (combo >= 1)
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit by a "+(combo+1)+"-hit chain! -" + (int)Math.round(extra*10)/10.0 + "!");
 						else
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 					}
-					if (combosound.get(damagedplayer.getUniqueId().toString()))
+					if (players.get(damagedplayer).isDingAlerts())
 					{
 						damagedplayer.playSound(damaged.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1000, (float) pitch);
 					}
@@ -125,7 +134,7 @@ public final class CombatHandler implements Listener {
 		{
 			Entity damaged = event.getEntity();
 			if (damaged instanceof Player)
-				if (combomsg.get(((Player) damaged).getUniqueId().toString()))
+				if (players.get(damaged).isChatAlerts())
 					damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 		}
 	}
@@ -149,7 +158,7 @@ public final class CombatHandler implements Listener {
 		if (damaged instanceof Player)
 		{
 
-			if (combomsg.get(((Player) damaged).getUniqueId().toString()))
+			if (players.get(damaged).isChatAlerts())
 				damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Ouch!");
 		}	
 	}
