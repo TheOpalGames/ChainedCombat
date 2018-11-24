@@ -1,5 +1,5 @@
 name: ChainedCombat
-main: net.theopalgames.chainedcombat
+main: net.theopalgames.chainedcombat.ChainedCombatPlugin
 version: 1.0
 author: aehmttw and Hallowizer
 description: A combat system to bridge the 1.8 and 1.9 combat systems.
