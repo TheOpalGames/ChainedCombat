@@ -100,9 +100,9 @@ public final class CombatHandler implements Listener {
 			if (players.get(attacker).isDingAlerts())
 			{
 				if (effective)
-					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BELL, 1000, (float) pitch);
+					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1000, (float) pitch);
 				else
-					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_SNARE, 1000, (float) pitch);
+					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BLOCK_SNARE, 1000, (float) pitch);
 			}
 
 			if (damaged instanceof Player)
