@@ -1,5 +1,8 @@
 package net.theopalgames.chainedcombat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -28,6 +31,8 @@ public final class CombatHandler implements Listener {
 		enabled = false;
 	}
 	
+	private final Map<Player,Combo> combos = new HashMap<>();
+	
 	@EventHandler
 	public void onCombat(EntityDamageByEntityEvent event)
 	{
@@ -46,20 +51,21 @@ public final class CombatHandler implements Listener {
 			{
 				try
 				{
-					extra = event.getDamage() * 0.2 * combos.get(attacker.getName());
+					extra = event.getDamage() * 0.2 * combos.get(attacker.getName()).getCount();
 				}
 				catch (Exception e) 
 				{
-					combos.put(attacker.getName(), 0);
+					combos.put(attacker, new Combo(attacker, 0, 0, 0));
 				}
 				if (damaged instanceof Player)
 					event.setDamage(event.getDamage() + extra / 4.0);
 				else
 					event.setDamage(event.getDamage() + extra);
-				combo = combos.get(attacker.getName());
-				combos.remove(attacker.getName());
-				combos.put(attacker.getName(), combo + 1);
-				combotimer.put(attacker.getName(), System.currentTimeMillis()/1000);
+				
+				combo = combos.get(attacker.getName()).getCount();
+				
+				combos.get(attacker.getName()).setCount(combo+1);
+				combos.get(attacker.getName()).setTime(System.currentTimeMillis()/1000);
 			}
 			else
 			{
