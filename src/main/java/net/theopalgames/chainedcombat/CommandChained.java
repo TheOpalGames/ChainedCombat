@@ -51,10 +51,10 @@ public final class CommandChained implements CommandExecutor {
 		sender.sendMessage(ChatColor.AQUA + "This server is running ChainedCombat from The Opal Games.");
 		
 		if (sender instanceof Player) {
-			if (chatOn.equals("chained alerts on") && chatOff.equals("chained alerts off"))
+			if (chatOn.startsWith("chained ") && chatOff.startsWith("chained "))
 				sender.sendMessage(ChatColor.AQUA + "/chained alerts <on|off>");
 			
-			if (dingOn.equals("chained sounds on") && dingOff.equals("chained sounds off"))
+			if (dingOn.startsWith("chained ") && dingOff.startsWith("chained "))
 				sender.sendMessage(ChatColor.AQUA + "/chained sounds <on|off>");
 		}
 		

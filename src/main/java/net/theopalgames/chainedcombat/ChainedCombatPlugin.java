@@ -39,6 +39,9 @@ public final class ChainedCombatPlugin extends JavaPlugin {
 		getCommand("chained").setExecutor(new CommandChained(config.getBoolean("enable-info-command"), config.getString("enable-combomsg-command"), config.getString("disable-combomsg-command"), config.getString("enable-combosound-command"), config.getString("disable-combosound-command")));
 		
 		Bukkit.getPluginManager().registerEvents(handler, this);
+		Bukkit.getPluginManager().registerEvents(new ToggleCommandHandler(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerJoinHandler(), this);
+		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, handler::updatePlayers, 1, 1);
 		
 		getLogger().info("ChainedCombat has been loaded!");

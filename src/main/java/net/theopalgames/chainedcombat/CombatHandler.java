@@ -1,8 +1,5 @@
 package net.theopalgames.chainedcombat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Particle;
@@ -17,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.google.common.base.Preconditions;
 
@@ -32,14 +28,6 @@ public final class CombatHandler implements Listener {
 	public synchronized void disable() {
 		Preconditions.checkState(enabled, "Disabling ChainedCombat while it is already disabled!");
 		enabled = false;
-	}
-	
-	private final Map<Player,PlayerWrapper> players = new HashMap<>();
-	
-	@EventHandler
-	public void onJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		players.put(player, new PlayerWrapper(player).init());
 	}
 	
 	@EventHandler
@@ -60,18 +48,18 @@ public final class CombatHandler implements Listener {
 			{
 				try
 				{
-					extra = event.getDamage() * 0.2 * players.get(attacker).getCombo().getCount();
+					extra = event.getDamage() * 0.2 * PlayerWrapper.get(attacker).getCombo().getCount();
 				}
 				catch (Exception e) 
 				{
-					players.get(attacker).setCombo(new Combo(attacker, 0, 0, 0));
+					PlayerWrapper.get(attacker).setCombo(new Combo(attacker, 0, 0, 0));
 				}
 				if (damaged instanceof Player)
 					event.setDamage(event.getDamage() + extra / 4.0);
 				else
 					event.setDamage(event.getDamage() + extra);
 				
-				Combo theCombo = players.get(attacker).getCombo();
+				Combo theCombo = PlayerWrapper.get(attacker).getCombo();
 				
 				combo = theCombo.getCount();
 				
@@ -83,7 +71,7 @@ public final class CombatHandler implements Listener {
 				effective = false;
 			}
 
-			if (players.get(attacker).isChatAlerts())
+			if (PlayerWrapper.get(attacker).isChatAlerts())
 			{
 				if (combo >= 1 && damaged instanceof Player)
 					attacker.sendMessage("\u00A7a(+"+Math.round(event.getDamage()*10)/10.0+") " + (combo+1) + " hit chain, +" + Math.round(extra*10)/40.0 + " (x"+ (1+combo*0.5/10.0) + ")");
@@ -99,7 +87,7 @@ public final class CombatHandler implements Listener {
 				pitch *= 1.0594630943;
 			}
 
-			if (players.get(attacker).isDingAlerts())
+			if (PlayerWrapper.get(attacker).isDingAlerts())
 			{
 				if (effective)
 					attacker.playSound(attacker.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1000, (float) pitch);
@@ -117,14 +105,14 @@ public final class CombatHandler implements Listener {
 				}
 				try
 				{
-					if (players.get(damagedplayer).isChatAlerts())
+					if (PlayerWrapper.get(damagedplayer).isChatAlerts())
 					{
 						if (combo >= 1)
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit by a "+(combo+1)+"-hit chain! -" + (int)Math.round(extra*10)/10.0 + "!");
 						else
 							damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 					}
-					if (players.get(damagedplayer).isDingAlerts())
+					if (PlayerWrapper.get(damagedplayer).isDingAlerts())
 					{
 						damagedplayer.playSound(damaged.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 1000, (float) pitch);
 					}
@@ -136,7 +124,7 @@ public final class CombatHandler implements Listener {
 		{
 			Entity damaged = event.getEntity();
 			if (damaged instanceof Player)
-				if (players.get(damaged).isChatAlerts())
+				if (PlayerWrapper.get((Player) damaged).isChatAlerts())
 					damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Hit!");
 		}
 	}
@@ -163,7 +151,7 @@ public final class CombatHandler implements Listener {
 		if (damaged instanceof Player)
 		{
 
-			if (players.get(damaged).isChatAlerts())
+			if (PlayerWrapper.get((Player) damaged).isChatAlerts())
 				damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Ouch!");
 		}	
 	}
@@ -173,7 +161,7 @@ public final class CombatHandler implements Listener {
 		{
 			for (Player player: Bukkit.getOnlinePlayers())
 			{
-				PlayerWrapper pw = players.get(player);
+				PlayerWrapper pw = PlayerWrapper.get(player);
 				
 				//Mention.getGlobal(player);
 				if (pw.hasCombo())
