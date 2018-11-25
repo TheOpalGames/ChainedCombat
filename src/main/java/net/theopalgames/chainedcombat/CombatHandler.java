@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -181,7 +182,7 @@ public final class CombatHandler implements Listener {
 						pw.removeCombo();
 						
 						if (pw.isChatAlerts())
-							player.sendMessage("ß6Your combo chain has been reset");
+							player.sendMessage(ChatColor.GOLD + "Your combo chain has been reset");
 						
 						if (pw.isDingAlerts())
 							player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_FLUTE, 1000, 1);;
