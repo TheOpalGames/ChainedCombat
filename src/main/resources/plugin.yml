@@ -10,6 +10,9 @@ commands:
     usage: chained
 
 permissions:
+  chained.command:
+    description: Allows you to see the ChainedCombat description from /chained, even if the command description is disabled.
+    default: op
   chained.reload:
     description: Allows you to reload the ChainedCombat config.
     default: op

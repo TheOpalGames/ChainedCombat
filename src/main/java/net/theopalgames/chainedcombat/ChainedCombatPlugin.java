@@ -23,7 +23,9 @@ public final class ChainedCombatPlugin extends JavaPlugin {
 	
 	private FileConfiguration config;
 	@Getter
-	private FileConfiguration playerData;
+	private YamlConfiguration playerData;
+	
+	private File playerDataFile;
 	
 	{
 		Preconditions.checkState(instance == null, "Two ChainedCombat plugins?");
@@ -57,7 +59,12 @@ public final class ChainedCombatPlugin extends JavaPlugin {
 			}
 		}
 		
-		playerData = YamlConfiguration.loadConfiguration(playerFile);
+		playerDataFile = playerFile;
+		reloadPlayerData();
+	}
+	
+	public void reloadPlayerData() {
+		playerData = YamlConfiguration.loadConfiguration(playerDataFile);
 	}
 	
 	@Override
