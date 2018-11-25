@@ -34,4 +34,12 @@ public final class PlayerWrapper {
 		chatAlerts = ourData.getBoolean("chatAlerts");
 		dingAlerts = ourData.getBoolean("dingAlerts");
 	}
+	
+	public boolean hasCombo() {
+		return combo != null;
+	}
+	
+	public void removeCombo() {
+		combo = null;
+	}
 }

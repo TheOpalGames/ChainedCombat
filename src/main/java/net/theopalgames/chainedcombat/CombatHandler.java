@@ -3,6 +3,7 @@ package net.theopalgames.chainedcombat;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -142,6 +143,9 @@ public final class CombatHandler implements Listener {
 	@EventHandler
 	public void onDamaged(EntityDamageEvent event)
 	{
+		if (!enabled)
+			return;
+		
 		Entity damaged = event.getEntity();
 		if (damaged instanceof LivingEntity)
 		{
@@ -161,5 +165,33 @@ public final class CombatHandler implements Listener {
 			if (players.get(damaged).isChatAlerts())
 				damaged.sendMessage("\u00A7c(-"+Math.round(event.getDamage()*10)/10.0+") Ouch!");
 		}	
+	}
+	
+	public void updatePlayers() {
+		try
+		{
+			for (Player player: Bukkit.getOnlinePlayers())
+			{
+				PlayerWrapper pw = players.get(player);
+				
+				//Mention.getGlobal(player);
+				if (pw.hasCombo())
+					if (System.currentTimeMillis()/1000 - 2 > pw.getCombo().getTime())
+					{
+						pw.removeCombo();
+						
+						if (pw.isChatAlerts())
+							player.sendMessage("ß6Your combo chain has been reset");
+						
+						if (pw.isDingAlerts())
+							player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_FLUTE, 1000, 1);;
+					}
+
+			}
+		}
+		catch (Exception e)
+		{
+
+		}
 	}
 }
