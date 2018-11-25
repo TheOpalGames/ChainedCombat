@@ -7,3 +7,7 @@ disable-combomsg-command: 'chained alerts off'
 
 enable-combosound-command: 'chained sounds on'
 disable-combosound-command: 'chained sounds off'
+
+default-settings:
+  chatAlerts: true
+  dingAlerts: true

@@ -39,8 +39,10 @@ public final class PlayerWrapper {
 	}
 	
 	private void initSettings() {
-		FileConfiguration playerData = ChainedCombatPlugin.getInstance().getPlayerData();
-		ConfigurationSection ourData = playerData.getConfigurationSection(player.getUniqueId().toString());
+		ConfigurationSection ourData = getOurData(false);
+		
+		if (ourData == null)
+			ourData = ChainedCombatPlugin.getInstance().getConfig().getConfigurationSection("default-settings");
 		
 		chatAlerts = ourData.getBoolean("chatAlerts");
 		dingAlerts = ourData.getBoolean("dingAlerts");
@@ -55,6 +57,19 @@ public final class PlayerWrapper {
 	}
 	
 	public void saveSettings() {
-		// TODO
+		ConfigurationSection ourData = getOurData(false);
+		
+		ourData.set("chatAlerts", chatAlerts);
+		ourData.set("dingAlerts", dingAlerts);
+	}
+	
+	private ConfigurationSection getOurData(boolean write) {
+		FileConfiguration playerData = ChainedCombatPlugin.getInstance().getPlayerData();
+		ConfigurationSection ourData = playerData.getConfigurationSection(player.getUniqueId().toString().replace("-", ""));
+		
+		if (ourData != null)
+			return ourData;
+		
+		return write ? playerData.createSection(player.getUniqueId().toString().replace("-", "")) : ChainedCombatPlugin.getInstance().getConfig().getConfigurationSection("default-settings"); 
 	}
 }
